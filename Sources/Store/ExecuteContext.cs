@@ -6,7 +6,7 @@ using Store.Configuration.Owner;
 
 namespace Store {
 	public sealed class ExecuteContext<T> {
-		public ExecuteContext(IDictionary<string, object> parameters, Exception exception = null, T result = null,
+		public ExecuteContext(IDictionary<string, object> parameters, Exception exception = null, T result = default(T),
 			bool actionHandled = false) {
 			Parameters = parameters;
 			Exception = exception;

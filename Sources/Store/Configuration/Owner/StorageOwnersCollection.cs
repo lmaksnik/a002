@@ -43,8 +43,8 @@ namespace Store.Configuration.Owner {
 
 		#endregion
 
-		public void Init(Storage storage) {
-			throw new NotImplementedException();
+		public void Init (StorageBase storage) {
+			throw new NotImplementedException ();
 		}
 	}
 }

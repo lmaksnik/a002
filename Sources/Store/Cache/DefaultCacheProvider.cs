@@ -45,7 +45,7 @@ namespace Store.Cache {
 		}
 
 		public Stream GetFromCache(Guid id) {
-			
+			return Stream.Null;
 		}
 
 		public Stream GetFromCache(IStorageObject storageObject) {
@@ -60,6 +60,10 @@ namespace Store.Cache {
 
 		public void Dispose() {
 			Cache.Clear();
+		}
+
+		public void AddToCache (IStorageObject storageObject) {
+			throw new NotImplementedException ();
 		}
 	}
 }

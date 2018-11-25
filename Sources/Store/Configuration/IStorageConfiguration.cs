@@ -6,16 +6,16 @@ using Store.Log;
 namespace Store.Configuration {
 	public interface IStorageConfiguration {
 
-		bool AllowUploadWithoutOwner { get; set; }
+		bool AllowUploadWithoutOwner { get; }
 
-		bool AllowReadWithoutOwner { get; set; }
+		bool AllowReadWithoutOwner { get; }
 
-		bool AllowRead { get; set; }
+		bool AllowRead { get; }
 
-		bool AllowUpload { get; set; }
+		bool AllowUpload { get; }
 
-		bool AllowRemove { get; set; }
+		bool AllowRemove { get; }
 
-		long DefaultStreamMaxSize { get; set; }
+		long DefaultStreamMaxSize { get; }
 	}
 }

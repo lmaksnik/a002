@@ -32,7 +32,7 @@ namespace Store.Context {
 		}
 
 		internal void EndExecute() {
-			Runtime = _stopwatch.Elapsed;
+
 			_stopwatch.Stop();
 		}
 	}

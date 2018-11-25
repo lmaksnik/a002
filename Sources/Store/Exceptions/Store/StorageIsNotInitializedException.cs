@@ -17,6 +17,6 @@ namespace Store.Exceptions.Store {
 			Storage = storage;
 		}
 
-		public readonly Storage Storage;
+		public readonly StorageBase Storage;
 	}
 }

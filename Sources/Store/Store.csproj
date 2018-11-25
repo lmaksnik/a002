@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Exceptions\Store\StorageAlreadyBeenInitializedException.cs" />
+    <Compile Remove="Exceptions\Store\StorageIsNotInitializedException.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Exceptions\Store\StorageAlreadyBeenInitializedException.cs" />
     <Compile Include="Exceptions\Store\StorageIsNotInitializedException.cs" />
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace Store {
 
 		public readonly StorageOwnersCollection Owners = new StorageOwnersCollection();
 
-		protected readonly IStorageConfiguration Configuration;
+		public readonly IStorageConfiguration Configuration;
 
 		#endregion
 
