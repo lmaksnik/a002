@@ -27,7 +27,7 @@ namespace Store {
 		}
 
 
-		protected virtual void Initialize() {
+		public virtual void Initialize() {
 			lock (_initLockObject) {
 				if (Initialized) throw new StorageIsNotInitializedException(this);
 

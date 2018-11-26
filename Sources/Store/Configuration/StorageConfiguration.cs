@@ -7,7 +7,7 @@ namespace Store.Configuration {
 
 		public bool AllowUploadWithoutOwner { get; set; }
 
-		public bool AllowReadWithoutOwner { get; set; };
+		public bool AllowReadWithoutOwner { get; set; }
 
 		public bool AllowRead { get; set; }
 

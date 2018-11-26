@@ -27,8 +27,11 @@ namespace Store {
 		#endregion
 
 		public Storage(IStorageConfiguration configuration, IStorageProvider storageProvider, ILogger logger, IStatistics statistics = null) : base(logger, statistics, storageProvider) {
+			if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+			if (configuration.DefaultStreamMaxSize < 0) throw new StorageConfigurationException(nameof(configuration.DefaultStreamMaxSize));
 			Configuration = configuration;
-			StorageProvider = storageProvider;
+
+			StorageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
 		}
 
 		#region Public}

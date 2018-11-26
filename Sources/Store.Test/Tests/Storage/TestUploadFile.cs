@@ -60,7 +60,7 @@ namespace Store.Test.Test {
 
 		protected Storage CreateStorage (IStorageConfiguration configuration) {
 			var storage = new Storage (configuration, null, null);
-			storage.Initialize ();
+			storage.Initialize();
 			return storage;
 		}
 
@@ -95,7 +95,7 @@ namespace Store.Test.Test {
 			DefaultStreamMaxSize = DefaultStreamMaxSize
 		};
 
-		AllowRead = true,
+		//AllowRead = true,
 		protected StorageConfiguration StorageConfigurationUploadAndOwnerFalse => new StorageConfiguration {
 			AllowRead = true,
 			AllowReadWithoutOwner = true,
