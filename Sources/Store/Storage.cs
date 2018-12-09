@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using Store.Configuration.Owner;
 using Store.Context;
+using Store.Domain.DataStore;
 using Store.Exceptions;
 using Store.Exceptions.Store;
 using Store.Logger;
 using Store.Statistics;
+using Store.StreamProvider;
 
 namespace Store {
 	public class Storage : StorageBase{
@@ -22,11 +24,11 @@ namespace Store {
 
 		#region Providers
 
-		protected readonly IStorageProvider StorageProvider;
+		protected readonly IDataStore StorageProvider;
 
 		#endregion
 
-		public Storage(IStorageConfiguration configuration, IStorageProvider storageProvider, ILogger logger, IStatistics statistics = null) : base(logger, statistics, storageProvider) {
+		public Storage(IStorageConfiguration configuration, IDataStore storageProvider, ILogger logger, IStatistics statistics = null) : base(logger, statistics, storageProvider) {
 			if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 			if (configuration.DefaultStreamMaxSize < 0) throw new StorageConfigurationException(nameof(configuration.DefaultStreamMaxSize));
 			Configuration = configuration;
@@ -36,7 +38,7 @@ namespace Store {
 
 		#region Public}
 
-		protected virtual IStorageObject OnUpload(Stream stream, string group, string name, string contentType,
+		protected virtual IDataStoreObject OnUpload(Stream stream, string group, string name, string contentType,
 			IOwner owner = null, bool? approve = null) {
 			if (HasUpload(owner)) throw new StorageReadonlyException();
 			if (owner == null && !Configuration.AllowUploadWithoutOwner) throw new ArgumentNullException(nameof(owner));
@@ -47,7 +49,7 @@ namespace Store {
 			return StorageProvider.Upload(stream, group, name, contentType, owner, approve);
 		}
 
-		public IStorageObject Upload(Stream stream, string group, string name, string contentType, IOwner owner = null, bool? approve = null) {
+		public IDataStoreObject Upload(Stream stream, string group, string name, string contentType, IOwner owner = null, bool? approve = null) {
 			if (!Initialized) throw new StorageAlreadyBeenInitializedException(this);
 			if (stream == Stream.Null) throw new ArgumentNullException(nameof(stream), "Stream is null!");
 			if (string.IsNullOrWhiteSpace(group)) throw new ArgumentNullException(nameof(group));
@@ -80,12 +82,12 @@ namespace Store {
 			});
 		}
 
-		protected virtual IStorageObject OnDownload(Guid id, IOwner owner = null) {
+		protected virtual IDataStoreObject OnDownload(Guid id, IOwner owner = null) {
 			if (HasRead(owner)) throw new StorageReadonlyException();
 			return StorageProvider.Download(id, owner);
 		}
 
-		public IStorageObject Download(Guid id, IOwner owner = null) {
+		public IDataStoreObject Download(Guid id, IOwner owner = null) {
 			if (!Initialized) throw new StorageAlreadyBeenInitializedException(this);
 			if (id == Guid.Empty) throw new ArgumentNullException(nameof(id));
 
@@ -97,7 +99,7 @@ namespace Store {
 
 		protected virtual bool OnRemove(Guid id, IOwner owner = null) {
 			if (HasRemove(owner)) throw new StorageReadonlyException();
-			return StorageProvider.Remove(id, owner);
+			return StorageProvider.Delete(id, owner);
 		}
 
 		public bool Remove(Guid id, IOwner owner = null) {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
+using Store.Domain.DataStore;
+using Store.StreamProvider;
 
 namespace Store.Cache {
 	public class DefaultCacheProvider : ICache {
@@ -20,9 +22,9 @@ namespace Store.Cache {
 			CurrentSize = 0;
 		}
 
-		public void AddToCache(IStorageObject storageObject, Stream stream) {
-			if (storageObject != null && !Cache.ContainsKey(storageObject.Id)) {
-				Cache.Add(storageObject.Id, new CacheObject(storageObject, ToMemoryStream(stream)));
+		public void AddToCache(IDataStoreObject dataStoreObject, Stream stream) {
+			if (dataStoreObject != null && !Cache.ContainsKey(dataStoreObject.Id)) {
+				Cache.Add(dataStoreObject.Id, new CacheObject(dataStoreObject, ToMemoryStream(stream)));
 				CurrentSize += stream.Length;
 			}
 		}
@@ -39,18 +41,18 @@ namespace Store.Cache {
 
 		}
 
-		public void RemoveFromCache(IStorageObject storageObject) {
-			if (storageObject != null)
-				RemoveFromCache(storageObject.Id);
+		public void RemoveFromCache(IDataStoreObject dataStoreObject) {
+			if (dataStoreObject != null)
+				RemoveFromCache(dataStoreObject.Id);
 		}
 
 		public Stream GetFromCache(Guid id) {
 			return Stream.Null;
 		}
 
-		public Stream GetFromCache(IStorageObject storageObject) {
-			if (storageObject == null) return Stream.Null;
-			return GetFromCache(storageObject.Id);
+		public Stream GetFromCache(IDataStoreObject dataStoreObject) {
+			if (dataStoreObject == null) return Stream.Null;
+			return GetFromCache(dataStoreObject.Id);
 		}
 
 		public void ClearCache() {
@@ -62,7 +64,7 @@ namespace Store.Cache {
 			Cache.Clear();
 		}
 
-		public void AddToCache (IStorageObject storageObject) {
+		public void AddToCache (IDataStoreObject dataStoreObject) {
 			throw new NotImplementedException ();
 		}
 	}

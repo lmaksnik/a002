@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Store.Domain.DataStore;
+using Store.StreamProvider;
 
 namespace Store.Cache {
 	public class CacheObject {
-		public CacheObject(IStorageObject storageObject, Stream stream) {
-			if (storageObject == null) throw new ArgumentNullException(nameof(storageObject));
+		public CacheObject(IDataStoreObject dataStoreObject, Stream stream) {
+			if (dataStoreObject == null) throw new ArgumentNullException(nameof(dataStoreObject));
 			if (stream == Stream.Null) throw new ArgumentNullException(nameof(stream));
-			Id = storageObject.Id;
-			StorageObject = storageObject;
+			Id = dataStoreObject.Id;
+			DataStoreObject = dataStoreObject;
 			Stream = stream;
 		}
 
 		public readonly Guid Id;
 
-		public readonly IStorageObject StorageObject;
+		public readonly IDataStoreObject DataStoreObject;
 
 		protected readonly Stream Stream;
 

@@ -2,9 +2,11 @@
 using System.IO;
 using Store.Configuration;
 using Store.Configuration.Owner;
+using Store.Domain.DataStore;
 using Store.Exceptions;
 using Store.Log;
 using Store.Logger;
+using Store.StreamProvider;
 using Store.Test.Test;
 
 namespace Store.Test.Tests.Storage {
@@ -117,12 +119,12 @@ namespace Store.Test.Tests.Storage {
 
 		#region Model
 
-		private class StoragePrvider : IStorageProvider {
+		private class StoragePrvider : IDataStore {
 			public void Init(StorageBase storage) {
 				throw new NotImplementedException();
 			}
 
-			public IStorageObject Upload(Stream stream, string @group, string name, string contentType, IOwner owner = null, bool? approve = null) {
+			public IDataStoreObject Upload(Stream stream, string @group, string name, string contentType, IOwner owner = null, bool? approve = null) {
 				throw new NotImplementedException();
 			}
 
@@ -130,7 +132,7 @@ namespace Store.Test.Tests.Storage {
 				throw new NotImplementedException();
 			}
 
-			public IStorageObject Download(Guid id, IOwner owner) {
+			public IDataStoreObject Download(Guid id, IOwner owner) {
 				throw new NotImplementedException();
 			}
 

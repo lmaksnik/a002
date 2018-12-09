@@ -3,9 +3,11 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Store.Configuration;
 using Store.Configuration.Owner;
+using Store.Domain.DataStore;
 using Store.Exceptions.Store;
 using Store.Log;
 using Store.Logger;
+using Store.StreamProvider;
 
 namespace Store.UnitTests.Tests.Storage {
 	[TestClass]
@@ -182,7 +184,7 @@ namespace Store.UnitTests.Tests.Storage {
 			}
 		}
 
-		private class StorageProvider : IStorageProvider {
+		private class StorageProvider : IDataStore {
 
 			protected readonly TestStorageUpload Test;
 
@@ -194,7 +196,7 @@ namespace Store.UnitTests.Tests.Storage {
 				throw new NotImplementedException();
 			}
 
-			public IStorageObject Upload(Stream stream, string @group, string name, string contentType, IOwner owner = null, bool? approve = null) {
+			public IDataStoreObject Upload(Stream stream, string @group, string name, string contentType, IOwner owner = null, bool? approve = null) {
 				Assert.IsTrue(stream != null);
 				Assert.IsTrue(stream != Stream.Null);
 				Assert.IsTrue(string.IsNullOrWhiteSpace(group));
@@ -206,7 +208,7 @@ namespace Store.UnitTests.Tests.Storage {
 				throw new NotImplementedException();
 			}
 
-			public IStorageObject Download(Guid id, IOwner owner) {
+			public IDataStoreObject Download(Guid id, IOwner owner) {
 				throw new NotImplementedException();
 			}
 
