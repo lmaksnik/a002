@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Store.Log {
+﻿namespace Store.Logger {
 	public interface ILog {
 
-		ELogLevel Level { get; set; }
+		ELogLevel Level { get; }
 
-		string Message { get; set; }
+		string Message { get; }
 
-		string MemberName { get; set; }
+		string MemberName { get; }
 
-		string ClassName { get; set; }
+		string ClassName { get; }
 
-		IDictionary<string, object> AdditionalInfo { get; set; }
-
+		LogParameter[] Parameters { get; }
 	}
 }

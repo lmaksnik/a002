@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using Store.Configuration.Owner;
-using Store.Domain.DataStore;
-using Store.Implementation.DataStore.FilesDirectory.MetaData;
+using Store.DataStore;
 
 namespace Store.Implementation.DataStore.FilesDirectory {
 	/// <summary>
@@ -47,17 +46,6 @@ namespace Store.Implementation.DataStore.FilesDirectory {
 			return MetaData.Get(id);
 		}
 
-		public IDataStoreObject[] GetNotApproved() {
-			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
-			return MetaData.GetNotApproved();
-		}
-
-		public bool Has(Guid id) {
-			if (id == Guid.Empty) return false;
-			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
-			return MetaData.Has(id);
-		}
-
 		public IDataStoreObject Upload(Stream stream, string @group, string name, string contentType, IOwner owner, bool approve) {
 			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
 			if (stream == null || stream == Stream.Null) throw new ArgumentNullException(nameof(stream));
@@ -68,52 +56,45 @@ namespace Store.Implementation.DataStore.FilesDirectory {
 			var fileName = name;
 			if (OverrideFileExtensions)
 				fileName = $"{name}.file";
+
+			var sourcePath = GetSourceDirectory();
+			var destinationPath = GetDestinationDirectory();
+
+			OnUpload(stream, Path.Combine(sourcePath, destinationPath, fileName));
+			return MetaData.Create(group, name, contentType, owner, approve, fileName, sourcePath, destinationPath);
+		}
+
+		public void Approve(Guid id, IOwner owner = null) {
+			if (id == Guid.Empty) return;
+			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
+
+			MetaData.Update(id, true, owner);
+		}
+
+		public void Delete(Guid id) {
+			if (id == Guid.Empty) return;
+			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
+
+			var obj = MetaData.Get(id);
+			if (obj == null) throw new Exception($"File with id \"{id}\" not found.");
 			
-			var obj = MetaData.Create(group, name, contentType, approve, fileName, GetSourceDirectory(), GetDestinationDirectory());
-			OnSave(stream, Path.Combine(obj.SourcePath, obj.DestinationPath, obj.FileName));
-			MetaData.Insert(obj);
-
-			return obj;
-		}
-
-		public void Approve(IDataStoreObject storeObject, IOwner owner) {
-			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
-			if (storeObject == null) throw new ArgumentNullException(nameof(storeObject));
-
-			var obj = (IFileDataStoreObject) storeObject;
-			obj.SetIsApproved(true);
-			MetaData.Update(obj);
-		}
-
-		public Stream Download(IDataStoreObject storeObject, IOwner owner) {
-			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
-			if (storeObject == null) throw new ArgumentNullException(nameof(storeObject));
-
-			var obj = (IFileDataStoreObject) storeObject;
-			return OnLoad(Path.Combine(obj.SourcePath, obj.DestinationPath, obj.FileName));
-		}
-
-		public void Delete(IDataStoreObject storeObject, IOwner owner) {
-			if (IsInitialized) throw new Exception($"This instance \"{nameof(FilesDirectoryDataStore)}\" is not initialized.");
-			if (storeObject == null) throw new ArgumentNullException(nameof(storeObject));
-
-			var obj = (IFileDataStoreObject)storeObject;
 			OnDelete(Path.Combine(obj.SourcePath, obj.DestinationPath, obj.FileName));
-			MetaData.Delete(obj);
+			MetaData.Delete(obj.Id);
 		}
+
 
 		#region Protected methods
 
-		private object _lockObjectGetSourceDirectory = new object();
+		private readonly object _lockObjectGetSourceDirectory = new object();
 
-		private int lastDirectoryIndex = 0;
+		private int _lastDirectoryIndex;
 
 		protected string GetSourceDirectory() {
 			lock (_lockObjectGetSourceDirectory) {
-				if (lastDirectoryIndex < 0 || lastDirectoryIndex >= SourcesFileDirectories.Length)
-					lastDirectoryIndex = 0;
-				else lastDirectoryIndex++;
-				return SourcesFileDirectories[lastDirectoryIndex];
+				if (_lastDirectoryIndex < 0 || _lastDirectoryIndex >= SourcesFileDirectories.Length)
+					_lastDirectoryIndex = 0;
+				else _lastDirectoryIndex++;
+				return SourcesFileDirectories[_lastDirectoryIndex];
 			}
 		}
 
@@ -134,27 +115,35 @@ namespace Store.Implementation.DataStore.FilesDirectory {
 		#endregion
 
 		#region Handlers
-
-		protected void OnSave(Stream stream, string fullName) {
-			if (File.Exists(fullName)) throw new Exception($"File \"{fullName}\" already exists.");
-			using (var fileStream = new FileStream(fullName, FileMode.CreateNew, FileAccess.ReadWrite)) {
+		
+		protected void OnUpload(Stream stream, string fullPath) {
+			if (File.Exists(fullPath)) throw new Exception($"File \"{fullPath}\" already exists.");
+			using (var fileStream = new FileStream(fullPath, FileMode.CreateNew, FileAccess.ReadWrite)) {
 				stream.CopyTo(fileStream);
 				fileStream.Flush();
 			}
 		}
 
-		protected Stream OnLoad(string fullName) {
-			if (File.Exists(fullName)) return new FileStream(fullName, FileMode.Open, FileAccess.Read);
+		protected internal Stream OnLoad(string fullPath) {
+			if (File.Exists(fullPath))
+				return new FileStream(fullPath, FileMode.Open, FileAccess.Read);
 			return Stream.Null;
 		}
 
-		protected void OnDelete(string fullName) {
-			if (File.Exists(fullName))
-				File.Delete(fullName);
+		protected void OnDelete(string fullPath) {
+			if (File.Exists(fullPath))
+				File.Delete(fullPath);
 		}
 
 		#endregion
 
+		public void Dispose() {
+			lock (_initLockObject) {
+				if (!IsInitialized) return;
+				MetaData.Dispose();
+				IsInitialized = false;
+			}
+		}
 	}
 
 	public enum EFileDirectoriesScheme {

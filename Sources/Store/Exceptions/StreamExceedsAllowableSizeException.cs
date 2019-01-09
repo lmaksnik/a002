@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Store.Exceptions.Store {
+namespace Store.Exceptions {
 	public class StreamExceedsAllowableSizeException : Exception {
 		public StreamExceedsAllowableSizeException() : base("Stream exceeds allowable size.") {
 		}

@@ -1,4 +1,4 @@
-﻿using Store.Domain.DataStore;
+﻿using Store.DataStore;
 
 namespace Store.Implementation.DataStore.FilesDirectory.MetaData {
 	public interface IFileDataStoreObject : IDataStoreObject {
@@ -8,8 +8,6 @@ namespace Store.Implementation.DataStore.FilesDirectory.MetaData {
 		string SourcePath { get; }
 
 		string DestinationPath { get; }
-
-		void SetIsApproved(bool value);
 
 	}
 }

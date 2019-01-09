@@ -2,15 +2,13 @@
 
 	public interface IOwner : IStorageObject {
 
-		string Name { get; set; }
+		string Name { get; }
 
-		bool AllowRead { get; set; }
+		bool AllowUpload { get; }
 
-		bool AllowUpload { get; set; }
+		bool AllowRemove{ get; }
 
-		bool AllowRemove{ get; set; }
-
-		long? StreamMaxSize { get; set; }
+		long? StreamMaxSize { get; }
 
 	}
 }

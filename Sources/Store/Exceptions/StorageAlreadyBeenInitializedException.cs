@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Store.Exceptions.Store {
+namespace Store.Exceptions {
 	public class StorageAlreadyBeenInitializedException : Exception {
 
 		private const string _msg = "This storage instance has already been initialized.";

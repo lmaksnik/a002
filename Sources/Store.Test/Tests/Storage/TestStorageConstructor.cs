@@ -2,9 +2,8 @@
 using System.IO;
 using Store.Configuration;
 using Store.Configuration.Owner;
-using Store.Domain.DataStore;
+using Store.DataStore;
 using Store.Exceptions;
-using Store.Log;
 using Store.Logger;
 using Store.StreamProvider;
 using Store.Test.Test;
@@ -150,7 +149,7 @@ namespace Store.Test.Tests.Storage {
 				throw new NotImplementedException();
 			}
 
-			public void Write(params ILog[] logObject) {
+			public void Log(params ILog[] logObject) {
 				throw new NotImplementedException();
 			}
 

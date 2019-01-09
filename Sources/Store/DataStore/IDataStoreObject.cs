@@ -1,6 +1,7 @@
 ﻿using System;
+using System.IO;
 
-namespace Store.Domain.DataStore {
+namespace Store.DataStore {
 	public interface IDataStoreObject {
 
 		IDataStore Store { get; }
@@ -15,10 +16,7 @@ namespace Store.Domain.DataStore {
 
 		bool IsApproved { get; }
 
-		#region Methods
+		Stream Stream { get; }
 
-
-
-		#endregion
 	}
 }

@@ -1,10 +1,11 @@
-﻿namespace Store.Log {
+﻿using System;
+
+namespace Store.Logger {
+	[Flags]
 	public enum ELogLevel {
 		Critical = 0,
 		Error = 1,
-		Warning = 2,
-		Audit = 3,
-		Info = 4,
-		Trace = 5
+		Info = 2,
+		Trace = 4
 	}
 }

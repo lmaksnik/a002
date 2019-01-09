@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Store.Configuration {
-	public interface IStorageObject
-	{
+	public interface IStorageObject {
 
-		Guid Gid { get; set; }
+		Guid Gid { get; }
 
 	}
 }

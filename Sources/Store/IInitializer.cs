@@ -5,7 +5,7 @@ using System.Text;
 namespace Store {
 	public interface IInitializer {
 
-		void Init(StorageBase storage);
+		void Init();
 
 	}
 }
