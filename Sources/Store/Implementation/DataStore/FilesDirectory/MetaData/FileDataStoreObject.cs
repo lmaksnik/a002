@@ -4,7 +4,7 @@ using Store.DataStore;
 
 namespace Store.Implementation.DataStore.FilesDirectory.MetaData {
 	public class FileDataStoreObject : IFileDataStoreObject {
-		internal FileDataStoreObject(FilesDirectoryDataStore store, Guid id, string @group, string name, string contentType, bool isApproved, string fileName, string sourcePath, string destinationPath) {
+		public FileDataStoreObject(FilesDirectoryDataStore store, Guid id, string @group, string name, string contentType, bool isApproved, string fileName, string sourcePath, string destinationPath) {
 			Store = store ?? throw new ArgumentNullException(nameof(store));
 			Id = id;
 			Group = @group;
@@ -26,7 +26,7 @@ namespace Store.Implementation.DataStore.FilesDirectory.MetaData {
 
 		public string ContentType { get; }
 
-		public bool IsApproved { get; private set; }
+		public bool IsApproved { get; set; }
 
 		private Stream _stream;
 

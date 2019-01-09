@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Store.Configuration.Owner;
 using Store.DataStore;
 
@@ -10,7 +11,11 @@ namespace Store.Implementation.DataStore.FilesDirectory {
 	public class FilesDirectoryDataStore : IDataStore {
 		public FilesDirectoryDataStore (IFilesMetaDataStore metaDataStore, string[] defaultSourceFileDirectories, bool overrideFileExtensions, EFileDirectoriesScheme directoryScheme = EFileDirectoriesScheme.Default) {
 			MetaData = metaDataStore ?? throw new ArgumentNullException(nameof(metaDataStore));
-			if (defaultSourceFileDirectories == null || defaultSourceFileDirectories.Length < 1) throw new ArgumentNullException(nameof(defaultSourceFileDirectories));
+
+			if (defaultSourceFileDirectories == null) throw new ArgumentNullException(nameof(defaultSourceFileDirectories));
+			defaultSourceFileDirectories = defaultSourceFileDirectories.Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
+			if (defaultSourceFileDirectories.Length < 1) throw new ArgumentNullException(nameof(defaultSourceFileDirectories));
+
 			SourcesFileDirectories = defaultSourceFileDirectories;
 			OverrideFileExtensions = overrideFileExtensions;
 			DirectoriesScheme = directoryScheme;
@@ -20,7 +25,7 @@ namespace Store.Implementation.DataStore.FilesDirectory {
 
 		private readonly object _initLockObject = new object();
 
-		protected bool IsInitialized { get; private set; }
+		public bool IsInitialized { get; private set; }
 
 		public readonly bool OverrideFileExtensions;
 

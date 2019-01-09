@@ -1,31 +1,75 @@
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Store.Configuration;
 using Store.Configuration.Owner;
 using Store.DataStore;
 using Store.Exceptions;
+using Store.Implementation.DataStore.FilesDirectory;
 using Store.Logger;
-using Store.StreamProvider;
+using Store.UnitTests.Mock;
 
 namespace Store.UnitTests.Tests.Storage {
 	[TestClass]
 	public class TestStorageConstructor {
 
 		[TestMethod]
-		public void TestStorageConfigurations() {
-			var configurations = StoreConfigurationHelper.GetAllConfigurationVariations();
-			foreach (var configuration in configurations) {
-				try {
-					var storage = new Store.Storage(configuration, new StorageProvider(), new StorageLogger());
-					Assert.IsTrue(configuration != null && configuration.DefaultStreamMaxSize >= 0);
-				} catch (ArgumentNullException ex) { } catch (StorageConfigurationException ex) {
+		public void TestForArgumentNullException() {
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(null, null, null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), null, null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(null, null, false), null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), null, false), null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new string[0], false), null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new []{""}, false), null);
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new []{"sdsddfsdg"}, false), null);
+			});
 
-				} catch (Exception ex) {
-					Assert.Fail(ex.Message);
-				}
-			}
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(null, null, false), new MockLogger());
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), null, false), new MockLogger());
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new string[0], false), new MockLogger());
+			});
+			Assert.ThrowsException<ArgumentNullException>(() => {
+				var storage = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new[] { "" }, false), new MockLogger());
+			});
+
+			var storage1 = new Store.Storage(new StorageConfiguration(), new FilesDirectoryDataStore(new MockFilesMetaDataStore(), new[] { "sdsddfsdg" }, false), new MockLogger());
 		}
 
+		[TestMethod]
+		public void TestForInit() {
+			var logger = new MockLogger();
+			var metaDataDataStore = new MockFilesMetaDataStore();
+			var dataStore = new FilesDirectoryDataStore(metaDataDataStore, new[] {"sdsddfsdg"}, false);
+
+			var storage = new Store.Storage(new StorageConfiguration(), dataStore, logger);
+			storage.Init();
+
+			Assert.AreNotEqual(logger.Logs, null, "Logger not initialized!");
+			Assert.AreNotEqual(metaDataDataStore.Store, null, "MetaDataDataStore not initialized!");
+			Assert.IsTrue(dataStore.IsInitialized, "DataStore not initialized!");
+		}
+
+	
+
+		/*
 		[TestMethod]
 		public void TestStorageForNull() {
 			var configuration = StoreConfigurationHelper.GetNormalConfiguration();
@@ -121,6 +165,6 @@ namespace Store.UnitTests.Tests.Storage {
 			}
 		}
 
-		#endregion
-	}
+		#endregion*/
+		}
 }

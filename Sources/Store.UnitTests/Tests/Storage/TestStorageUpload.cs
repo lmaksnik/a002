@@ -6,12 +6,11 @@ using Store.Configuration.Owner;
 using Store.DataStore;
 using Store.Exceptions;
 using Store.Logger;
-using Store.StreamProvider;
 
 namespace Store.UnitTests.Tests.Storage {
 	[TestClass]
 	public class TestStorageUpload {
-
+		/*
 		protected Stream UploadededStream;
 
 		[TestMethod]
@@ -216,6 +215,6 @@ namespace Store.UnitTests.Tests.Storage {
 			}
 		}
 
-		#endregion
+		#endregion*/
 	}
 }
